@@ -53,23 +53,23 @@ public class MainActivity extends Activity implements Register.RegisterListener{
 
         // Check device for Play Services APK. If check succeeds, proceed with
         //  GCM registration.
-        if (checkPlayServices()) {
-            gcm = GoogleCloudMessaging.getInstance(this);
-            regid = getRegistrationId(context);
-
-            Log.i(TAG, "regid from on Create: " + regid);
-
-            if (regid == null || regid.isEmpty()) {
-                getRegisterIdInBackground();
-            }
-            else {
-                //already registered, just send registration
-                new Register(Common.getEmail(), regid, MainActivity.this).execute();
-                Toast.makeText(MainActivity.this, "Stored regid from onCreate: " + regid, Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            Log.i(TAG, "No valid Google Play Services APK found.");
-        }
+//        if (checkPlayServices()) {
+//            gcm = GoogleCloudMessaging.getInstance(this);
+//            regid = getRegistrationId(context);
+//
+//            Log.i(TAG, "regid from on Create: " + regid);
+//
+//            if (regid == null || regid.isEmpty()) {
+//                getRegisterIdInBackground();
+//            }
+//            else {
+//                //already registered, just send registration
+//                new Register(Common.getEmail(), regid, MainActivity.this).execute();
+//                Toast.makeText(MainActivity.this, "Stored regid from onCreate: " + regid, Toast.LENGTH_SHORT).show();
+//            }
+//        } else {
+//            Log.i(TAG, "No valid Google Play Services APK found.");
+//        }
 
     }
 
@@ -77,15 +77,15 @@ public class MainActivity extends Activity implements Register.RegisterListener{
     @Override
     protected void onResume() {
         super.onResume();
-        if(regid != null && !regid.isEmpty()) {
-            //Already registered, just send registration
-            new Register(Common.getEmail(), regid, MainActivity.this).execute();
-            Toast.makeText(MainActivity.this, "Stored regid from onResume: " + regid, Toast.LENGTH_SHORT).show();
-        }
-        else {
-            getRegisterIdInBackground();
-        }
-        checkPlayServices();
+//        if(regid != null && !regid.isEmpty()) {
+//            //Already registered, just send registration
+//            new Register(Common.getEmail(), regid, MainActivity.this).execute();
+//            Toast.makeText(MainActivity.this, "Stored regid from onResume: " + regid, Toast.LENGTH_SHORT).show();
+//        }
+//        else {
+//            getRegisterIdInBackground();
+//        }
+//        checkPlayServices();
     }
 
     /**
