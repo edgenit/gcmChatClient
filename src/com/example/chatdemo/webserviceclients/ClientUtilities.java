@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.chatdemo.gcm;
+package com.example.chatdemo.webserviceclients;
 
 import android.util.Log;
 import com.example.chatdemo.Common;
@@ -35,7 +35,7 @@ import java.util.Random;
 /**
  * Helper class used to communicate with the demo server.
  */
-public final class ServerUtilities {
+public final class ClientUtilities {
 	
 	private static final String TAG = "ServerUtilities";
 
@@ -88,6 +88,7 @@ public final class ServerUtilities {
         //Log.i(TAG, "sending message (msg = " + msg + ")");
         String serverUrl = Common.getServerUrl() + "/chat";
         Map<String, String> params = new HashMap<String, String>();
+        params.put(Common.EMAIL, from);
         params.put(Common.MESSAGE, msg);
         params.put(Common.FROM, from);
         params.put(Common.TO, to);

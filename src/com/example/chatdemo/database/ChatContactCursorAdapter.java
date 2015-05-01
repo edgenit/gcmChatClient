@@ -12,8 +12,8 @@ import com.example.chatdemo.R;
 /**
  * Created by jeffreyfried on 4/25/15.
  */
-public class ChatCursorAdapter extends CursorAdapter {
-    public ChatCursorAdapter(Context context, Cursor cursor) {
+public class ChatContactCursorAdapter extends CursorAdapter {
+    public ChatContactCursorAdapter(Context context, Cursor cursor) {
         super(context, cursor, 0);
     }
     @Override
@@ -23,7 +23,7 @@ public class ChatCursorAdapter extends CursorAdapter {
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-// Find fields to populate in inflated template
+        // Find fields to populate in inflated template
         TextView tvName = (TextView) view.findViewById(R.id.textViewName);
         TextView tvCount = (TextView) view.findViewById(R.id.textViewCount);
         TextView tvEmail = (TextView) view.findViewById(R.id.textViewEmail);

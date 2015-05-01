@@ -3,11 +3,12 @@ package com.example.chatdemo.gcm;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
+import com.example.chatdemo.webserviceclients.ClientUtilities;
 
 /**
  * Created by jeffreyfried on 4/5/15.
  */
-public class Register extends AsyncTask<Void, Void, Object> {
+public class RegisterWithGCMServer extends AsyncTask<Void, Void, Object> {
 
     String email;
     String regid;
@@ -32,7 +33,7 @@ public class Register extends AsyncTask<Void, Void, Object> {
 
     }
 
-    public Register(String email, String regid, RegisterListener listener) {
+    public RegisterWithGCMServer(String email, String regid, RegisterListener listener) {
         this.email = email;
         this.regid = regid;
         this.mListener = listener;
@@ -49,7 +50,7 @@ public class Register extends AsyncTask<Void, Void, Object> {
     protected Object doInBackground(Void... params) {
         Result result = new Result();
         try {
-            ServerUtilities.register(email, regid);
+            ClientUtilities.register(email, regid);
         }
         catch(Exception e) {
             result.status = "error";

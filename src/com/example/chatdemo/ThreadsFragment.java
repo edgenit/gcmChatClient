@@ -35,7 +35,7 @@ public class ThreadsFragment extends ListFragment implements AdapterView.OnItemC
         Bundle bundle = new Bundle();
         bundle.putInt("position", position);
         bundle.putString("item", (String)parent.getItemAtPosition(position));
-        ChatMessageListFragment cf = new ChatMessageListFragment();
+        ChatMessageListFragmentOld cf = new ChatMessageListFragmentOld();
         cf.setArguments(bundle);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.fragmentParentViewGroup, cf);

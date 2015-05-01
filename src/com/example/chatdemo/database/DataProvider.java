@@ -19,8 +19,8 @@ public class DataProvider extends ContentProvider {
 
     public static final String TABLE_MESSAGES = "messages";
     public static final String COL_MSG = "msg";
-    public static final String COL_FROM = "from";
-    public static final String COL_TO = "to";
+    public static final String COL_FROM = "fromEmail";
+    public static final String COL_TO = "toEmail";
     public static final String COL_AT = "at";
 
     public static final String TABLE_PROFILES = "profiles";
@@ -46,7 +46,7 @@ public class DataProvider extends ContentProvider {
 
 
         private static final String DATABASE_NAME = "chatdemo.db";
-        private static final int DATABASE_VERSION = 1;
+        private static final int DATABASE_VERSION = 5;
 
         public DbHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -56,7 +56,7 @@ public class DataProvider extends ContentProvider {
         @Override
         public void onCreate(SQLiteDatabase db) {
             db.execSQL("create table " + TABLE_MESSAGES
-                    + " (_id integer primary key autoincrement, msg text, email text, email2 text, at datetime default current_timestamp);");
+                    + " (_id integer primary key autoincrement, msg text, toEmail text, fromEmail text, at datetime default current_timestamp);");
             db.execSQL("create table " + TABLE_PROFILES
                     + " (_id integer primary key autoincrement, name text, email text unique, count integer default 0);");
         }

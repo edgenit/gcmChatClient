@@ -1,46 +1,42 @@
 package com.example.chatdemo;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
+import android.app.ListFragment;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
-import com.example.chatdemo.database.ChatMessage;
+import android.widget.Button;
+import android.widget.EditText;
+import com.example.chatdemo.database.ChatMessageCursorAdapter;
+import com.example.chatdemo.database.DataProvider;
 import com.example.chatdemo.database.MySQLiteHelper;
-import com.example.chatdemo.gcm.ServerUtilities;
+import com.example.chatdemo.webserviceclients.ClientUtilities;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
 
 /**
- * Created by jeffreyfried on 4/7/15.
+ * Created by jeffreyfried on 4/26/15.
  */
-public class ChatMessageListFragment extends Fragment {
-    private int position;
-    String peer;
-    String peerEmail;
-    //private TextView textView;
-    public ChatMessageListFragment() {
-        position = -1;
-    }
+public class ChatMessageListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>{
+    private ChatMessageCursorAdapter mAdapter;
+    private String peer;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        position = getArguments().getInt("position");
-        peer = getArguments().getString(MySQLiteHelper.COL_NAME);
         View view = inflater.inflate(R.layout.chatmessagelistfragment, container, false);
+        peer = getArguments().getString(MySQLiteHelper.COL_NAME);
         return view;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-
         super.onActivityCreated(savedInstanceState);
         EditText editText = (EditText)getView().findViewById(R.id.msg_edit);
         editText.setText("chat thread " + peer);
@@ -58,47 +54,46 @@ public class ChatMessageListFragment extends Fragment {
             }
         });
 
-//        ArrayList<String> items = new ArrayList<String>();
-//        items.add("item 1");
-//        items.add("item 2");
-//        items.add("item 3");
+        mAdapter = new ChatMessageCursorAdapter(getActivity(), null);
+        setListAdapter(mAdapter);
+        // Start out with a progress indicator.
+//        setListShown(false);
 
-//        ArrayAdapter<String> itemsAdapter =
-//                new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_list_item_1, items);
+        // Prepare the loader.  Either re-connect with an existing one,
+        // or start a new one.
+        getLoaderManager().initLoader(0, null, this);
+    }
 
+    @Override
+    public void onResume() {
+        getLoaderManager().restartLoader(0, null, this);
+        super.onResume();
+    }
+    static final String[] MESSAGES_SUMMARY_PROJECTION = new String[] {
+            DataProvider.COL_ID,
+            DataProvider.COL_AT,
+            DataProvider.COL_FROM,
+            DataProvider.COL_TO,
+            DataProvider.COL_MSG
+    };
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Uri uri = Uri.withAppendedPath(DataProvider.CONTENT_URI_MESSAGES
+                , Integer.toString(DataProvider.MESSAGES_ALLROWS));
+        return new CursorLoader(getActivity(), DataProvider.CONTENT_URI_MESSAGES,
+                MESSAGES_SUMMARY_PROJECTION, null, null,
+                DataProvider.COL_AT + " COLLATE LOCALIZED ASC");
+    }
 
-        ArrayList<ChatMessage> messages = new ArrayList<ChatMessage>();
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Log.i("ChatMessage", "onLoadFinished");
+        mAdapter.swapCursor(data);
+    }
 
-        ChatMessage msg1 = new ChatMessage("you", "me", new Date(), "hello");
-        ChatMessage msg2 = new ChatMessage("me", "you", new Date(), "hello, yourself");
-        ChatMessage msg3 = new ChatMessage("you", "me", new Date(), "what now?");
-
-        messages.add(msg1);
-        messages.add(msg2);
-        messages.add(msg3);
-
-        ChatMessageAdapter chatMessageAdapter =
-                new ChatMessageAdapter(this.getActivity(), messages);
-        ListView listView = (ListView) getView().findViewById(R.id.list);
-        listView.setAdapter(chatMessageAdapter);
-
-        View view = getView();
-        view.setFocusableInTouchMode(true);
-        view.requestFocus();
-        view.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                Log.i("cmlf", "keyCode: " + keyCode);
-                if (keyCode == KeyEvent.KEYCODE_BACK) {
-                    Log.i("cmlf", "onKey Back listener is working!!!");
-                    getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        });
-
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mAdapter.swapCursor(null);
     }
 
     void sendMessageInBackground(String msg, String from, String to) {
@@ -107,7 +102,7 @@ public class ChatMessageListFragment extends Fragment {
             protected String doInBackground(Void... params) {
                 String result = "";
                 try {
-                    result = ServerUtilities.send(msg, from, to);
+                    result = ClientUtilities.send(msg, from, to);
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }

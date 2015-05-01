@@ -1,6 +1,7 @@
 package com.example.chatdemo;
 
 import android.app.ListFragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,6 +76,8 @@ public class DbTestFragment extends ListFragment {
                 }
             }
         });
+
+
     }
 
     //---------------------------------------- test crud

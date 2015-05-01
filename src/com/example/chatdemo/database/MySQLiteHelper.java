@@ -10,13 +10,13 @@ import android.util.Log;
  */
 public class MySQLiteHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "chatdemo.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 5;
     public static final String COL_ID = "_id";
 
     public static final String TABLE_MESSAGES = "messages";
     public static final String COL_MSG = "msg";
-    public static final String COL_FROM = "from";
-    public static final String COL_TO = "to";
+    public static final String COL_FROM = "fromEmail";
+    public static final String COL_TO = "toEmail";
     public static final String COL_AT = "at";
 
     public static final String TABLE_PROFILES = "profiles";

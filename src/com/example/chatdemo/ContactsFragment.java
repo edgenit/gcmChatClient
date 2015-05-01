@@ -3,8 +3,6 @@ package com.example.chatdemo;
 import android.app.FragmentTransaction;
 import android.app.ListFragment;
 import android.app.LoaderManager;
-import android.content.ContentProviderClient;
-import android.content.ContentResolver;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
@@ -14,11 +12,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CursorAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
-import com.example.chatdemo.database.ChatContactDataSource;
-import com.example.chatdemo.database.ChatCursorAdapter;
+import com.example.chatdemo.database.ChatContactCursorAdapter;
 import com.example.chatdemo.database.DataProvider;
 import com.example.chatdemo.database.MySQLiteHelper;
 
@@ -27,7 +22,7 @@ import com.example.chatdemo.database.MySQLiteHelper;
  */
 public class ContactsFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>{
     //ChatContactDataSource chatContactDataSource;
-    ChatCursorAdapter mAdapter;
+    ChatContactCursorAdapter mAdapter;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -37,7 +32,7 @@ public class ContactsFragment extends ListFragment implements LoaderManager.Load
         //chatContactDataSource = new ChatContactDataSource(getActivity());
         //chatContactDataSource.open();
         // Create an empty adapter we will use to display the loaded data.
-        mAdapter = new ChatCursorAdapter(getActivity(), null);
+        mAdapter = new ChatContactCursorAdapter(getActivity(), null);
         setListAdapter(mAdapter);
         // Start out with a progress indicator.
         setListShown(false);
@@ -136,6 +131,7 @@ public class ContactsFragment extends ListFragment implements LoaderManager.Load
         bundle.putString(MySQLiteHelper.COL_EMAIL, email);
         bundle.putInt(MySQLiteHelper.COL_COUNT, count);
 
+//        ChatMessageListFragmentOld cf = new ChatMessageListFragmentOld();
         ChatMessageListFragment cf = new ChatMessageListFragment();
         cf.setArguments(bundle);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();

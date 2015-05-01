@@ -104,7 +104,7 @@ public class ChatMessageAdapter extends BaseAdapter implements View.OnClickListe
             /***** Get each Model object from Arraylist ********/
             tempValues=null;
             tempValues = (ChatMessage) data.get( position );
-            holder.text = (TextView)vi.findViewById(R.id.text1);
+            holder.text = (TextView)vi.findViewById(R.id.chatMessageText);
             holder.text.setText(tempValues.getMessage());
 
             /************  Set Model values in Holder elements ***********/
@@ -117,12 +117,13 @@ public class ChatMessageAdapter extends BaseAdapter implements View.OnClickListe
             if(tempValues.getSender().equals("you")) {
                 holder.text.setGravity(Gravity.END);
                 root.setPadding(150, 10, 10, 10);
+                holder.text.setTextColor(Color.WHITE);
                 setBoxColor(box, Color.MAGENTA);
                 item.setBackground(box);
 //                item.setBackgroundColor(Color.MAGENTA);
             }
             else {
-                holder.text = (TextView)vi.findViewById(R.id.text1);
+               // holder.text = (TextView)vi.findViewById(R.id.text2);
                 root.setPadding(10, 10, 50, 10);
 //                item.setBackgroundColor(Color.LTGRAY);
                 setBoxColor(box, Color.LTGRAY);
