@@ -39,17 +39,18 @@ public final class ClientUtilities {
 	
 	private static final String TAG = "ServerUtilities";
 
-    private static final int MAX_ATTEMPTS = 1; // usually 5, but 1 for testing
+    private static final int MAX_ATTEMPTS = 5; // usually 5, but 1 for testing
     private static final int BACKOFF_MILLI_SECONDS = 2000;
     private static final Random random = new Random();
 
     /**
      * Register this account/device pair within the server.
      */
-    public static String register(final String email, final String regId) {
+    public static String register(final String name, final String email, final String regId) {
         //Log.i(TAG, "registering device (regId = " + regId + ")");
         String serverUrl = Common.getServerUrl() + "/register";
         Map<String, String> params = new HashMap<String, String>();
+        params.put(Common.NAME, name);
         params.put(Common.EMAIL, email);
         params.put(Common.REGID, regId);
         // Once GCM returns a registration id, we need to register it in the
@@ -62,6 +63,23 @@ public final class ClientUtilities {
         return null;
     }
 
+    /**
+     *
+     */
+    public static String fetchProfile(final String email) {
+        //Log.i(TAG, "registering device (regId = " + regId + ")");
+        String serverUrl = Common.getServerUrl() + "/myprofile";
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(Common.EMAIL, email);
+        // Once GCM returns a registration id, we need to register it in the
+        // demo server. As the server might be down, we will retry it a couple
+        // times.
+        try {
+            return post(serverUrl, params, MAX_ATTEMPTS);
+        } catch (IOException e) {
+        }
+        return null;
+    }
     /**
      * Unregister this account/device pair within the server.
      */
@@ -84,11 +102,11 @@ public final class ClientUtilities {
     /**
      * Send a message.
      */
-    public static String send(String msg, String from, String to) throws IOException {
+    public static String send(String email, String msg, String from, String to) throws IOException {
         //Log.i(TAG, "sending message (msg = " + msg + ")");
         String serverUrl = Common.getServerUrl() + "/chat";
         Map<String, String> params = new HashMap<String, String>();
-        params.put(Common.EMAIL, from);
+        params.put(Common.EMAIL, email);
         params.put(Common.MESSAGE, msg);
         params.put(Common.FROM, from);
         params.put(Common.TO, to);

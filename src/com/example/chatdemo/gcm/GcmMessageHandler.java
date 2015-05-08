@@ -6,14 +6,16 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
+import com.example.chatdemo.database.ChatMessageAdapter;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 public class GcmMessageHandler extends IntentService {
 
-    String mes;
     private Handler handler;
     public GcmMessageHandler() {
         super("GcmMessageHandler");
+        // make sure message is delivered even if process goes away
+        setIntentRedelivery(true);
     }
 
     @Override
@@ -31,18 +33,29 @@ public class GcmMessageHandler extends IntentService {
         // in your BroadcastReceiver.
         String messageType = gcm.getMessageType(intent);
 
-        mes = extras.getString("title");
-        showToast();
-        Log.i("GCM", "Received : (" +messageType+")  "+extras.getString("title"));
+        ChatMessageAdapter chatMessageAdapter = new ChatMessageAdapter(extras);
+        chatMessageAdapter.insert(getBaseContext());
+
+//        message = extras.getString("message");
+//        from = extras.getString("fromName");
+//        ContentValues cv = new ContentValues();
+//        cv.put(DataProvider.COL_AT, new Date().toString());
+//        cv.put(DataProvider.COL_FROM, from);
+//        cv.put(DataProvider.COL_MSG, message);
+//        this.getBaseContext().getContentResolver().insert(DataProvider.CONTENT_URI_MESSAGES_FILTER, cv);
+
+        String text = chatMessageAdapter.getSender() + ": " + chatMessageAdapter.getMessage();
+        showToast(text);
+        Log.i("GCM", text);
 
         GcmBroadcastReceiver.completeWakefulIntent(intent);
 
     }
 
-    public void showToast(){
+    public void showToast(String msg){
         handler.post(new Runnable() {
             public void run() {
-                Toast.makeText(getApplicationContext(),mes , Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), msg , Toast.LENGTH_LONG).show();
             }
         });
 

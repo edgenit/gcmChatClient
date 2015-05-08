@@ -1,28 +1,30 @@
 package com.example.chatdemo;
 
-import android.app.FragmentTransaction;
-import android.app.ListFragment;
-import android.app.LoaderManager;
+import android.app.*;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.ListView;
+import android.widget.PopupMenu;
+import com.example.chatdemo.database.ChatContactAdapter;
 import com.example.chatdemo.database.ChatContactCursorAdapter;
 import com.example.chatdemo.database.DataProvider;
-import com.example.chatdemo.database.MySQLiteHelper;
+
 
 /**
  * Created by jeffreyfried on 4/25/15.
  */
-public class ContactsFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class ContactsFragment extends ListFragment
+                              implements LoaderManager.LoaderCallbacks<Cursor>, PopupMenu.OnMenuItemClickListener {
     //ChatContactDataSource chatContactDataSource;
     ChatContactCursorAdapter mAdapter;
+
+    private String selectedContactName = "";
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -76,13 +78,12 @@ public class ContactsFragment extends ListFragment implements LoaderManager.Load
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.threads, container, false);
+        View view = inflater.inflate(R.layout.chatcontacts_list, container, false);
         return view;
     }
     static final String[] CONTACTS_SUMMARY_PROJECTION = new String[] {
             DataProvider.COL_ID,
             DataProvider.COL_NAME,
-            DataProvider.COL_EMAIL,
             DataProvider.COL_COUNT
     };
 
@@ -105,7 +106,8 @@ public class ContactsFragment extends ListFragment implements LoaderManager.Load
         if (isResumed()) {
             setListShown(true);
         } else {
-            setListShownNoAnimation(true);
+//            setListShownNoAnimation(true);
+            setListShown(true);
         }
     }
 
@@ -119,24 +121,78 @@ public class ContactsFragment extends ListFragment implements LoaderManager.Load
 
     @Override public void onListItemClick(ListView l, View v, int position, long id) {
         Cursor cursor = (Cursor)l.getAdapter().getItem(position);
-        String name = cursor.getString(cursor.getColumnIndexOrThrow(MySQLiteHelper.COL_NAME));
-        String email = cursor.getString(cursor.getColumnIndexOrThrow(MySQLiteHelper.COL_EMAIL));
-        int count = cursor.getInt(cursor.getColumnIndexOrThrow(MySQLiteHelper.COL_COUNT));
+        selectedContactName = cursor.getString(cursor.getColumnIndexOrThrow(DataProvider.COL_NAME));
 
-        Log.i("clicked email: ", cursor.getString(2));
+        showPopup(v);
+    }
+
+    private void viewMessagesFromContact(String contactName) {
+
+        ChatContactAdapter contact = new ChatContactAdapter(contactName);
+        contact.updateCount(getActivity(), 0);
+
         Bundle bundle = new Bundle();
-        bundle.putInt("position", position);
-        bundle.putLong("id", id);
-        bundle.putString(MySQLiteHelper.COL_NAME, name);
-        bundle.putString(MySQLiteHelper.COL_EMAIL, email);
-        bundle.putInt(MySQLiteHelper.COL_COUNT, count);
+//        bundle.putInt("position", position);
+//        bundle.putLong("id", id);
+        bundle.putString(DataProvider.COL_NAME, contactName);
+//        bundle.putInt(DataProvider.COL_COUNT, count);
 
-//        ChatMessageListFragmentOld cf = new ChatMessageListFragmentOld();
         ChatMessageListFragment cf = new ChatMessageListFragment();
         cf.setArguments(bundle);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.fragmentParentViewGroup, cf);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    public static class DeleteContactDialogFragment extends DialogFragment {
+        String contactName;
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the Builder class for convenient dialog construction
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(R.string.confirmRemoveMessage)
+                    .setPositiveButton(R.string.confirmRemoveContact, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            ChatContactAdapter contact = new ChatContactAdapter(contactName);
+                            contact.delete(getActivity());
+                        }
+                    })
+                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User cancelled the dialog
+                        }
+                    });
+            // Create the AlertDialog object and return it
+            return builder.create();
+        }
+    }
+    private void deleteContact(String contactName) {
+        // to do: add confirm dialog
+        DeleteContactDialogFragment newFragment = new DeleteContactDialogFragment();
+        newFragment.contactName = contactName;
+        newFragment.show(getFragmentManager(), "deleteContact");
+    }
+
+    private void showPopup(View v) {
+        PopupMenu popup = new PopupMenu(getActivity(), v);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.contact_menu, popup.getMenu());
+        popup.setOnMenuItemClickListener(this);
+        popup.show();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.view_messages:
+                viewMessagesFromContact(selectedContactName);
+                return true;
+            case R.id.remove_contact:
+                deleteContact(selectedContactName);
+                return true;
+            default:
+                return false;
+        }
     }
 }

@@ -9,6 +9,8 @@ import android.content.SharedPreferences;
  */
 public class Common extends Application {
     private static String baseUrl = "http://10.0.0.4:3000";
+
+    //temp until we integrate Nudge database
     private static String myEmail = "clevcollc@gmail.com";
 
     private static final String PROPERTY_APP_VERSION = "appVersion";
@@ -23,6 +25,7 @@ public class Common extends Application {
     public final static String MESSAGE = "message";
     public final static String TO = "to";
     public final static String FROM = "from";
+    public final static String NAME = "name";
 
     private final static String registerUrl = baseUrl + "/register";
 
@@ -69,7 +72,7 @@ public class Common extends Application {
     }
     public static String getAccountName(Context context) {
         SharedPreferences prefs = getSharedPreferences(context);
-        return prefs.getString(ACCOUNT_NAME, null);
+        return prefs.getString(ACCOUNT_NAME, "Set Name");
     }
     public static void setAccountName(Context context, String value) {
         SharedPreferences prefs = getSharedPreferences(context);

@@ -45,6 +45,7 @@ public class MainActivity extends Activity implements RegisterWithGCMServer.Regi
 
         if (savedInstanceState == null) {
             if(hasAccount()) {
+                Log.w("OnCreate", "hasAccount");
                 getFragmentManager()
                         .beginTransaction()
 
@@ -52,6 +53,7 @@ public class MainActivity extends Activity implements RegisterWithGCMServer.Regi
                         .commit();
             }
             else {
+                Log.w("OnCreate", "needs account");
                 Intent intent = new Intent(this, AccountActivity.class);
                 startActivity(intent);
                 finish();
@@ -67,6 +69,7 @@ public class MainActivity extends Activity implements RegisterWithGCMServer.Regi
     // You need to do the Play Services APK check here too.
     @Override
     protected void onResume() {
+        Log.w("onResume", "onResume");
         super.onResume();
         doGCMRegistration();
 
@@ -148,7 +151,8 @@ public class MainActivity extends Activity implements RegisterWithGCMServer.Regi
             @Override
             protected void onPostExecute(String msg) {
                 Common.setGCMRegId(MainActivity.this, MainActivity.this.regid);
-                new RegisterWithGCMServer(Common.getAccountEmail(MainActivity.this), regid, MainActivity.this).execute();
+                new RegisterWithGCMServer(Common.getAccountName(MainActivity.this)
+                        ,Common.getAccountEmail(MainActivity.this), regid, MainActivity.this).execute();
                 Toast.makeText(MainActivity.this, "regid from gcm: " + regid, Toast.LENGTH_SHORT).show();
 
             }
@@ -215,8 +219,9 @@ public class MainActivity extends Activity implements RegisterWithGCMServer.Regi
 
     @Override
     public void onPostRegisterExecute(RegisterWithGCMServer.Result result) {
-
-        String msg = !result.status.equalsIgnoreCase("error") ? result.status : result.error;
+        String msg = !result.status.equalsIgnoreCase("error")
+                        ? getResources().getString(R.string.registrationSuccess)
+                        : result.error;
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 

@@ -22,6 +22,7 @@ import com.example.chatdemo.webserviceclients.FetchToken;
 import java.io.File;
 
 public class AccountActivity extends Activity implements FetchToken.AuthTokenListener{
+	private static final int GET_MY_PROFILE = 900;
 	private static final int AUTH_REQUEST_CODE = 1000;
 	String mEmail = ""; // Received from newChooseAccountIntent(); passed to getToken()
 	TextView valAccountEmail;

@@ -19,13 +19,13 @@ public class DataProvider extends ContentProvider {
 
     public static final String TABLE_MESSAGES = "messages";
     public static final String COL_MSG = "msg";
-    public static final String COL_FROM = "fromEmail";
-    public static final String COL_TO = "toEmail";
+    public static final String COL_FROM = "fromName";
+    public static final String COL_TO = "toName";
     public static final String COL_AT = "at";
 
     public static final String TABLE_PROFILES = "profiles";
     public static final String COL_NAME = "name";
-    public static final String COL_EMAIL = "email";
+//    public static final String COL_EMAIL = "email";
     public static final String COL_COUNT = "count";
 
     public static final Uri CONTENT_URI_MESSAGES = Uri.parse("content://com.example.chatdemo.provider/messages");
@@ -46,7 +46,7 @@ public class DataProvider extends ContentProvider {
 
 
         private static final String DATABASE_NAME = "chatdemo.db";
-        private static final int DATABASE_VERSION = 5;
+        private static final int DATABASE_VERSION = 7;
 
         public DbHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -56,9 +56,9 @@ public class DataProvider extends ContentProvider {
         @Override
         public void onCreate(SQLiteDatabase db) {
             db.execSQL("create table " + TABLE_MESSAGES
-                    + " (_id integer primary key autoincrement, msg text, toEmail text, fromEmail text, at datetime default current_timestamp);");
+                    + " (_id integer primary key autoincrement, msg text, toName text, fromName text, at datetime default current_timestamp);");
             db.execSQL("create table " + TABLE_PROFILES
-                    + " (_id integer primary key autoincrement, name text, email text unique, count integer default 0);");
+                    + " (_id integer primary key autoincrement, name text unique, count integer default 0);");
         }
 
         @Override
@@ -109,6 +109,7 @@ public class DataProvider extends ContentProvider {
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
+
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         long id;
@@ -116,7 +117,7 @@ public class DataProvider extends ContentProvider {
             case MESSAGES_ALLROWS:
                 id = db.insertOrThrow(TABLE_MESSAGES, null, values);
                 if (values.get(COL_TO) == null) {
-                    db.execSQL("update profile set count=count+1 where email = ?", new Object[]{values.get(COL_FROM)});
+                    db.execSQL("update profiles set count=count+1 where name = ?", new Object[]{values.get(COL_FROM)});
                     getContext().getContentResolver().notifyChange(CONTENT_URI_PROFILE, null);
                 }
                 break;

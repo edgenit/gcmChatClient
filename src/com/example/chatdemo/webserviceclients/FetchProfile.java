@@ -1,21 +1,18 @@
-package com.example.chatdemo.gcm;
+package com.example.chatdemo.webserviceclients;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
-import com.example.chatdemo.webserviceclients.ClientUtilities;
 
 /**
  * Created by jeffreyfried on 4/5/15.
  */
-public class RegisterWithGCMServer extends AsyncTask<Void, Void, Object> {
+public class FetchProfile extends AsyncTask<Void, Void, Object> {
 
-    String name;
     String email;
-    String regid;
 
     private ProgressDialog mDialog;
-    private RegisterListener mListener;
+    private FetchProfileListener mListener;
 
     public class Result {
         public String status;
@@ -26,20 +23,20 @@ public class RegisterWithGCMServer extends AsyncTask<Void, Void, Object> {
         }
     }
 
-    public interface RegisterListener {
+    public interface FetchProfileListener {
         // required by google services to get activity and content
         Activity getRegisterActivity();
         // identifies this particular request
-        void onPostRegisterExecute(Result result);
+        void onPostFetchProfileExecute(Result result);
 
     }
 
-    public RegisterWithGCMServer(String name, String email, String regid, RegisterListener listener) {
-        this.name = name;
+    public FetchProfile(String email, String regid, FetchProfileListener listener) {
         this.email = email;
-        this.regid = regid;
         this.mListener = listener;
     }
+
+
 
     @Override
     protected void onPreExecute() {
@@ -52,7 +49,7 @@ public class RegisterWithGCMServer extends AsyncTask<Void, Void, Object> {
     protected Object doInBackground(Void... params) {
         Result result = new Result();
         try {
-            ClientUtilities.register(name, email, regid);
+            ClientUtilities.fetchProfile(email);
         }
         catch(Exception e) {
             result.status = "error";
@@ -65,7 +62,7 @@ public class RegisterWithGCMServer extends AsyncTask<Void, Void, Object> {
     protected void onPostExecute(Object result) {
         // NOTE: You can call UI Element here
         mDialog.dismiss();
-        mListener.onPostRegisterExecute((Result)result);
+        mListener.onPostFetchProfileExecute((Result) result);
     }
 
 }

@@ -14,10 +14,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+import com.example.chatdemo.database.ChatMessageAdapter;
 import com.example.chatdemo.database.ChatMessageCursorAdapter;
 import com.example.chatdemo.database.DataProvider;
-import com.example.chatdemo.database.MySQLiteHelper;
 import com.example.chatdemo.webserviceclients.ClientUtilities;
+import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -27,19 +29,21 @@ import java.io.IOException;
 public class ChatMessageListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>{
     private ChatMessageCursorAdapter mAdapter;
     private String peer;
+    EditText editText;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.chatmessagelistfragment, container, false);
-        peer = getArguments().getString(MySQLiteHelper.COL_NAME);
+        View view = inflater.inflate(R.layout.chatmessage_listfragment, container, false);
+        peer = getArguments().getString(DataProvider.COL_NAME);
+        // to do: zero count
         return view;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        EditText editText = (EditText)getView().findViewById(R.id.msg_edit);
-        editText.setText("chat thread " + peer);
+        editText = (EditText)getView().findViewById(R.id.msg_edit);
+        editText.setText("");
 
         Button btnSend = (Button)getView().findViewById(R.id.send_btn);
 
@@ -48,9 +52,10 @@ public class ChatMessageListFragment extends ListFragment implements LoaderManag
             public void onClick(View v) {
                 //Toast.makeText(ChatMessageListFragment.this.getActivity(), editText.getText(), Toast.LENGTH_SHORT).show();
                 String to = peer;
-                String from = Common.getEmail();
+                String email = Common.getAccountEmail(getActivity());
+                String from = Common.getAccountName(getActivity());
                 String msg = editText.getText().toString();
-                sendMessageInBackground(msg, from, to);
+                sendMessageInBackground(email, msg, from, to);
             }
         });
 
@@ -96,22 +101,60 @@ public class ChatMessageListFragment extends ListFragment implements LoaderManag
         mAdapter.swapCursor(null);
     }
 
-    void sendMessageInBackground(String msg, String from, String to) {
-        new AsyncTask<Void, Void, String>() {
+    public class SendMessageResult {
+        public String sender;
+        public String receiver;
+        public String message;
+        public String httpResponse;
+    }
+
+    void sendMessageInBackground(String email, String msg, String from, String to) {
+
+        editText.setText("");
+        ChatMessageAdapter adapter = new ChatMessageAdapter(msg, from, to);
+        adapter.insert(getActivity());
+
+        new AsyncTask<Void, Void, SendMessageResult>() {
             @Override
-            protected String doInBackground(Void... params) {
-                String result = "";
+            protected SendMessageResult doInBackground(Void... params) {
+                SendMessageResult sendResult = new SendMessageResult();
+                sendResult.message = msg;
+                sendResult.sender = from;
+                sendResult.receiver = to;
                 try {
-                    result = ClientUtilities.send(msg, from, to);
+                    sendResult.httpResponse = ClientUtilities.send(email, msg, from, to);
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
-                return result;
+                return sendResult;
             }
 
             @Override
-            protected void onPostExecute(String msg) {
-                Log.i("Send message result", msg);
+            protected void onPostExecute(SendMessageResult result) {
+                try {
+                    if(result != null) {
+                        Log.i("SendMessage result", result.httpResponse);
+
+
+                        JSONObject json = new JSONObject(result.httpResponse);
+                        String status = json.getString("status");
+                        String sResult = status.equalsIgnoreCase("error")
+                                            ? json.getString("error")
+                                            : getResources().getString(R.string.sendMessageSuccess);
+                        Toast.makeText(getActivity(), sResult, Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        throw new Exception("Null response, server is probably down");
+                    }
+                }
+                catch(NullPointerException nullEx) {
+                    Log.e("Send Message: ", "Null response, server is probably down");
+                    Toast.makeText(getActivity(), "Null response, server is probably down", Toast.LENGTH_SHORT).show();
+                }
+                catch(Exception ex) {
+                    Log.e("Send Message: ", ex.getMessage());
+                    Toast.makeText(getActivity(), ex.getMessage(), Toast.LENGTH_SHORT).show();
+                }
             }
         }.execute(null, null, null);
     }

@@ -51,7 +51,7 @@ public class ChatMessageCursorAdapter extends CursorAdapter {
         tvChatMessageText.setText(message);
         tvChatMessageText.setGravity(Gravity.END);
 
-        if(from.equalsIgnoreCase(Common.getEmail())) {
+        if(from.equalsIgnoreCase(Common.getAccountName(context))) {
             root.setPadding(150, 10, 10, 10);
             tvChatMessageText.setTextColor(Color.WHITE);
             setBoxColor(box, Color.MAGENTA);
