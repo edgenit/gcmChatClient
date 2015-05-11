@@ -28,6 +28,26 @@ public class Common extends Application {
     public final static String NAME = "name";
 
     private final static String registerUrl = baseUrl + "/register";
+    private static String currentContact = "";
+    private static int lastFragment = 0;
+
+    public static int getLastFragment() {
+        return lastFragment;
+    }
+
+    public static void setLastFragment(int lastFragment) {
+        Common.lastFragment = lastFragment;
+    }
+
+    public static String getCurrentContact() {
+        return currentContact;
+    }
+
+    public static void setCurrentContact(String currentContact) {
+        Common.currentContact = currentContact;
+    }
+
+
 
     @Override
     public void onCreate() {

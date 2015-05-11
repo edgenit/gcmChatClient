@@ -107,6 +107,32 @@ public class DataProvider extends ContentProvider {
         return null;
     }
 
+    private void insertOrUpdateProfileMessageCount(String name) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+        qb.setTables(TABLE_PROFILES);
+        qb.appendWhere(COL_NAME + " = " + name);
+        String [] projection = {COL_ID};
+        Cursor c = db.rawQuery("SELECT " + COL_COUNT + " FROM " + TABLE_PROFILES
+                                + " WHERE " + COL_NAME + " = ?", new String[]{name});
+
+        ContentValues values = new ContentValues();
+
+        if(c.getCount() > 0) {
+            //db.execSQL("update profiles set count=count+1 where name = ?", new Object[]{name});
+            int count = c.getInt(c.getColumnIndex(COL_COUNT));
+            count++;
+            values.put(COL_COUNT, count);
+            db.update(TABLE_PROFILES, values, "name = ?", new String[]{name});
+        }
+        else {
+            values.put(COL_NAME, name);
+            values.put(COL_COUNT, 1);
+            db.insert(TABLE_PROFILES, null, values);
+        }
+    }
+
     @Override
     public Uri insert(Uri uri, ContentValues values) {
 
@@ -117,7 +143,8 @@ public class DataProvider extends ContentProvider {
             case MESSAGES_ALLROWS:
                 id = db.insertOrThrow(TABLE_MESSAGES, null, values);
                 if (values.get(COL_TO) == null) {
-                    db.execSQL("update profiles set count=count+1 where name = ?", new Object[]{values.get(COL_FROM)});
+                    //db.execSQL("update profiles set count=count+1 where name = ?", new Object[]{values.get(COL_FROM)});
+                    this.insertOrUpdateProfileMessageCount(values.getAsString(COL_FROM));
                     getContext().getContentResolver().notifyChange(CONTENT_URI_PROFILE, null);
                 }
                 break;

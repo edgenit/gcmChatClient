@@ -4,24 +4,26 @@ package com.example.chatdemo;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.common.AccountPicker;
 import com.example.chatdemo.webserviceclients.FetchToken;
 
-import java.io.File;
-
-public class AccountActivity extends Activity implements FetchToken.AuthTokenListener{
+public class AccountActivity extends AppCompatActivity implements FetchToken.AuthTokenListener{
 	private static final int GET_MY_PROFILE = 900;
 	private static final int AUTH_REQUEST_CODE = 1000;
 	String mEmail = ""; // Received from newChooseAccountIntent(); passed to getToken()
@@ -29,14 +31,22 @@ public class AccountActivity extends Activity implements FetchToken.AuthTokenLis
 
     FetchToken mFetchToken;
 
+	private boolean accountHasChanged;
+
 //	GlobalAccess GA;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
+		accountHasChanged = false;
+
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_account);
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+		//getActionBar().setDisplayHomeAsUpEnabled(true);
+
+		Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+		//toolbar.setTitle("Chat Demo");
+		setSupportActionBar(toolbar);
 
 		valAccountEmail = (TextView) findViewById(R.id.textAccountEmail);
 
@@ -52,7 +62,21 @@ public class AccountActivity extends Activity implements FetchToken.AuthTokenLis
 			}
 		});
 
+		EditText editName = (EditText)findViewById(R.id.editName);
+		String name = Common.getAccountName(this);
+		editName.setText(name);
 
+		Button btn = (Button)findViewById(R.id.btnSetName);
+		btn.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				String text = editName.getText().toString();
+				Common.setAccountName(AccountActivity.this, text);
+				//goBackToMainActivity();
+				accountHasChanged = true;
+			}
+		});
 
 		if(mEmail == null) {
 			valAccountEmail.setText("No account selected");
@@ -63,7 +87,20 @@ public class AccountActivity extends Activity implements FetchToken.AuthTokenLis
 		}
 	}
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        return true;
+    }
 
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Common.setLastFragment(item.getItemId());
+		goBackToMainActivity();
+        return true;
+    }
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -72,11 +109,10 @@ public class AccountActivity extends Activity implements FetchToken.AuthTokenLis
 			if (resultCode == RESULT_OK) {
 				mEmail = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
 
-                Common.setAccountEmail(this, mEmail);
-                // force re-registration
-                Common.setGCMRegId(this, null);
+				Common.setAccountEmail(this, mEmail);
                 valAccountEmail.setText(mEmail);
-                this.goBackToMainActivity();
+				accountHasChanged = true;
+                //this.goBackToMainActivity();
 
 			} else if (resultCode == RESULT_CANCELED)  {
 				// The account picker dialog closed without selecting an account.
@@ -119,29 +155,24 @@ public class AccountActivity extends Activity implements FetchToken.AuthTokenLis
 //---------------------------------------------------------- previously on AccountActivity...
 	
 	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// TODO Auto-generated method stub
-		switch(item.getItemId())
-		{
-			case android.R.id.home:
-				goBackToMainActivity();
-				break;
-		}
-		return super.onOptionsItemSelected(item);
-	}
+
 	
 	@Override
 	public void onBackPressed() {
-		// TODO Auto-generated method stub
-		super.onBackPressed();
+	//	super.onBackPressed();
 		goBackToMainActivity();
 	}
 	
 	
 	private void goBackToMainActivity()
 	{
+		if(accountHasChanged) {
+			// force re-registration
+			Common.setGCMRegId(this, null);
+			accountHasChanged = false;
+		}
 		Intent intent=new Intent(AccountActivity.this,MainActivity.class);
+		intent.putExtra(MainActivity.BUNDLE_KEY_LAST_ACTIVITY, AccountActivity.class.toString());
 		startActivity(intent);
 		finish();
 		

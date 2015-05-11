@@ -18,14 +18,14 @@ public class ChatContactCursorAdapter extends CursorAdapter {
     }
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        return LayoutInflater.from(context).inflate(R.layout.chatcontact, parent, false);
+        return LayoutInflater.from(context).inflate(R.layout.chatcontact_listitem, parent, false);
     }
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         // Find fields to populate in inflated template
-        TextView tvName = (TextView) view.findViewById(R.id.textViewName);
-        TextView tvCount = (TextView) view.findViewById(R.id.textViewCount);
+        TextView tvName = (TextView) view.findViewById(R.id.text_view_vame);
+        TextView tvCount = (TextView) view.findViewById(R.id.text_view_count);
         // Extract properties from cursor
         String body = cursor.getString(cursor.getColumnIndexOrThrow(DataProvider.COL_NAME));
         int count = cursor.getInt(cursor.getColumnIndexOrThrow(DataProvider.COL_COUNT));

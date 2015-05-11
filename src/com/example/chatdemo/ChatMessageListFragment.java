@@ -34,7 +34,8 @@ public class ChatMessageListFragment extends ListFragment implements LoaderManag
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.chatmessage_listfragment, container, false);
-        peer = getArguments().getString(DataProvider.COL_NAME);
+//        peer = getArguments().getString(DataProvider.COL_NAME);
+        peer = Common.getCurrentContact();
         // to do: zero count
         return view;
     }
@@ -140,7 +141,7 @@ public class ChatMessageListFragment extends ListFragment implements LoaderManag
                         String status = json.getString("status");
                         String sResult = status.equalsIgnoreCase("error")
                                             ? json.getString("error")
-                                            : getResources().getString(R.string.sendMessageSuccess);
+                                            : getResources().getString(R.string.send_message_success);
                         Toast.makeText(getActivity(), sResult, Toast.LENGTH_SHORT).show();
                     }
                     else {

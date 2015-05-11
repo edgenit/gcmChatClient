@@ -19,7 +19,7 @@ import com.example.chatdemo.database.DataProvider;
 /**
  * Created by jeffreyfried on 4/25/15.
  */
-public class ContactsFragment extends ListFragment
+public class ContactsListFragment extends ListFragment
                               implements LoaderManager.LoaderCallbacks<Cursor>, PopupMenu.OnMenuItemClickListener {
     //ChatContactDataSource chatContactDataSource;
     ChatContactCursorAdapter mAdapter;
@@ -78,7 +78,7 @@ public class ContactsFragment extends ListFragment
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.chatcontacts_list, container, false);
+        View view = inflater.inflate(R.layout.chatcontacts_listfragment, container, false);
         return view;
     }
     static final String[] CONTACTS_SUMMARY_PROJECTION = new String[] {
@@ -128,20 +128,24 @@ public class ContactsFragment extends ListFragment
 
     private void viewMessagesFromContact(String contactName) {
 
+        Common.setLastFragment(R.id.view_messages);
+
         ChatContactAdapter contact = new ChatContactAdapter(contactName);
         contact.updateCount(getActivity(), 0);
 
-        Bundle bundle = new Bundle();
+//        Bundle bundle = new Bundle();
 //        bundle.putInt("position", position);
 //        bundle.putLong("id", id);
-        bundle.putString(DataProvider.COL_NAME, contactName);
+//        bundle.putString(DataProvider.COL_NAME, contactName);
 //        bundle.putInt(DataProvider.COL_COUNT, count);
 
+        Common.setCurrentContact(contactName);
         ChatMessageListFragment cf = new ChatMessageListFragment();
-        cf.setArguments(bundle);
+//        cf.setArguments(bundle);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.fragmentParentViewGroup, cf);
         transaction.addToBackStack(null);
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         transaction.commit();
     }
 
@@ -151,8 +155,8 @@ public class ContactsFragment extends ListFragment
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             // Use the Builder class for convenient dialog construction
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage(R.string.confirmRemoveMessage)
-                    .setPositiveButton(R.string.confirmRemoveContact, new DialogInterface.OnClickListener() {
+            builder.setMessage(R.string.confirm_remove_message)
+                    .setPositiveButton(R.string.confirm_remove_contact, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             ChatContactAdapter contact = new ChatContactAdapter(contactName);
                             contact.delete(getActivity());

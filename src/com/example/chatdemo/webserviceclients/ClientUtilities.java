@@ -66,20 +66,20 @@ public final class ClientUtilities {
     /**
      *
      */
-    public static String fetchProfile(final String email) {
-        //Log.i(TAG, "registering device (regId = " + regId + ")");
-        String serverUrl = Common.getServerUrl() + "/myprofile";
-        Map<String, String> params = new HashMap<String, String>();
-        params.put(Common.EMAIL, email);
-        // Once GCM returns a registration id, we need to register it in the
-        // demo server. As the server might be down, we will retry it a couple
-        // times.
-        try {
-            return post(serverUrl, params, MAX_ATTEMPTS);
-        } catch (IOException e) {
-        }
-        return null;
-    }
+//    public static String fetchProfile(final String email) {
+//        //Log.i(TAG, "registering device (regId = " + regId + ")");
+//        String serverUrl = Common.getServerUrl() + "/myprofile";
+//        Map<String, String> params = new HashMap<String, String>();
+//        params.put(Common.EMAIL, email);
+//        // Once GCM returns a registration id, we need to register it in the
+//        // demo server. As the server might be down, we will retry it a couple
+//        // times.
+//        try {
+//            return post(serverUrl, params, MAX_ATTEMPTS);
+//        } catch (IOException e) {
+//        }
+//        return null;
+//    }
     /**
      * Unregister this account/device pair within the server.
      */
@@ -114,33 +114,6 @@ public final class ClientUtilities {
         return post(serverUrl, params, MAX_ATTEMPTS);
     }
 
-    /**
-     * Create a group.
-     */
-//    public static String create() {
-//        //Log.i(TAG, "creating group");
-//        String serverUrl = Common.getServerUrl() + "/group";
-//        Map<String, String> params = new HashMap<String, String>();
-//
-//        try {
-//        	return post(serverUrl, params, MAX_ATTEMPTS);
-//        } catch (IOException e) {
-//        }
-//        return null;
-//    }
-//
-//    /**
-//     * Join a group.
-//     */
-//    public static void join(String to) throws IOException {
-//    	//Log.i(TAG, "joining group");
-//        String serverUrl = Common.getServerUrl() + "/join";
-//        Map<String, String> params = new HashMap<String, String>();
-//        params.put(Common.FROM, Common.getChatId());
-//        params.put(Common.TO, to);
-//
-//        post(serverUrl, params, MAX_ATTEMPTS);
-//    }
 
     /**
      * Issue a POST request to the server.

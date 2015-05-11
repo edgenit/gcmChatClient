@@ -17,10 +17,10 @@ import com.example.chatdemo.database.ChatContactAdapter;
 /**
  * Created by jeffreyfried on 4/17/15.
  */
-public class TestFragment extends Fragment {
+public class AddContactFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.test, container, false);
+        return inflater.inflate(R.layout.add_contact, container, false);
     }
 
     @Override
@@ -29,19 +29,7 @@ public class TestFragment extends Fragment {
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         Button btn = null;
 
-        EditText editName = (EditText)getActivity().findViewById(R.id.editName);
-        String name = Common.getAccountName(getActivity());
-        editName.setText(name);
 
-        btn = (Button)getActivity().findViewById(R.id.btnSetName);
-        btn.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                String text = editName.getText().toString();
-                Common.setAccountName(getActivity(), text);
-            }
-        });
 
         btn = (Button)getActivity().findViewById(R.id.buttonAccount);
         btn.setOnClickListener(new View.OnClickListener(){
@@ -82,7 +70,7 @@ public class TestFragment extends Fragment {
             @Override
             public void onClick(View v) {
 //                ThreadsFragment tf = new ThreadsFragment();
-                ContactsFragment cf = new ContactsFragment();
+                ContactsListFragment cf = new ContactsListFragment();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
 //                transaction.replace(R.id.fragmentParentViewGroup, tf);
                 transaction.replace(R.id.fragmentParentViewGroup, cf);

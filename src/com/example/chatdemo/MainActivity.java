@@ -1,6 +1,9 @@
 package com.example.chatdemo;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,7 +11,13 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+
+
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.chatdemo.gcm.RegisterWithGCMServer;
@@ -19,9 +28,14 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MainActivity extends Activity implements RegisterWithGCMServer.RegisterListener{
+public class MainActivity extends AppCompatActivity implements RegisterWithGCMServer.RegisterListener{
     public static final String EXTRA_MESSAGE = "message";
     public static final String PROPERTY_REG_ID = "registration_id";
+
+
+
+    public final static int NULL_FLAGS = 0;
+    public final static String BUNDLE_KEY_LAST_ACTIVITY = "last Activity";
 
 
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
@@ -34,30 +48,86 @@ public class MainActivity extends Activity implements RegisterWithGCMServer.Regi
     SharedPreferences prefs;
     Context context;
     String regid;
+
+    private boolean popLastFragment() {
+        FragmentManager fm = getFragmentManager();
+        Log.w(TAG, "Fragment count: " + fm.getBackStackEntryCount());
+        if (fm.getBackStackEntryCount() > 0) {
+            getFragmentManager().popBackStack();
+            return true;
+        } else {
+            return false;
+        }
+    }
+    @Override
+    public void onBackPressed()
+    {
+        if (!this.popLastFragment()) {
+            super.onBackPressed();
+        }
+    }
+
     /**
      * Called when the activity is first created.
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        //toolbar.setTitle("Chat Demo");
+        setSupportActionBar(toolbar);
 
 
         if (savedInstanceState == null) {
             if(hasAccount()) {
-                Log.w("OnCreate", "hasAccount");
+                Log.i("OnCreate", "null instance state and hasAccount");
+                Fragment fragment = new ContactsListFragment();
+
+                // see if we coming from the last activity
+                String lastActivity = getIntent().getStringExtra(MainActivity.BUNDLE_KEY_LAST_ACTIVITY);
+                if(lastActivity != null && lastActivity.equalsIgnoreCase(AccountActivity.class.toString())) {
+                    switch (Common.getLastFragment()) {
+                        case R.id.contacts:
+                            fragment = new ContactsListFragment();
+                            break;
+                        case R.id.view_messages:
+                            fragment = new ChatMessageListFragment();
+                            break;
+                        case R.id.add_contact:
+                            fragment = new AddContactFragment();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
                 getFragmentManager()
                         .beginTransaction()
-
-                        .add(R.id.fragmentParentViewGroup, new TestFragment())
+                       // .addToBackStack(TAG)
+                        .add(R.id.fragmentParentViewGroup, fragment)
                         .commit();
             }
             else {
-                Log.w("OnCreate", "needs account");
+                Log.i("OnCreate", "null instance state and needs account");
                 Intent intent = new Intent(this, AccountActivity.class);
                 startActivity(intent);
                 finish();
             }
+        }
+        else if(hasAccount()) {
+            Log.i("OnCreate", "saved instance state and has account");
+            if(!popLastFragment()) {
+                activateFragment(R.id.contacts);
+            }
+        }
+        else {
+            Log.i("OnCreate", "saved instance state and no account");
+            Intent intent = new Intent(this, AccountActivity.class);
+            Common.setLastFragment(R.id.contacts);
+            startActivity(intent);
+            finish();
         }
 
         context = getApplicationContext();
@@ -66,12 +136,69 @@ public class MainActivity extends Activity implements RegisterWithGCMServer.Regi
 
     }
 
-    // You need to do the Play Services APK check here too.
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if(!activateFragment(id)) {
+            return super.onOptionsItemSelected(item);
+        }
+        else {
+            return true;
+        }
+    }
+
+    private boolean activateFragment(int id) {
+        boolean result = true;
+
+        if(id == R.id.contacts) {
+            ContactsListFragment cf = new ContactsListFragment();
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragmentParentViewGroup, cf);
+            transaction.addToBackStack(null);
+            Common.setLastFragment(id);
+            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+            transaction.commit();
+        }
+        else if(id == R.id.account) {
+            Intent intent = new Intent(this, AccountActivity.class);
+            startActivity(intent);
+            finish();
+        }
+        else if (id == R.id.add_contact) {
+            Common.setLastFragment(id);
+            AddContactFragment tf = new AddContactFragment();
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragmentParentViewGroup, tf);
+            transaction.addToBackStack(null);
+            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+            transaction.commit();
+        }
+        else {
+            result = false;
+        }
+        return result;
+    }
+
+
+
+    // You need to do the Play Services APK check here too.(done in doGCMRegistration)
     @Override
     protected void onResume() {
         Log.w("onResume", "onResume");
         super.onResume();
         doGCMRegistration();
+
 
 //        if(regid != null && !regid.isEmpty()) {
 //            //Already registered, just send registration
@@ -220,7 +347,7 @@ public class MainActivity extends Activity implements RegisterWithGCMServer.Regi
     @Override
     public void onPostRegisterExecute(RegisterWithGCMServer.Result result) {
         String msg = !result.status.equalsIgnoreCase("error")
-                        ? getResources().getString(R.string.registrationSuccess)
+                        ? getResources().getString(R.string.registration_success)
                         : result.error;
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
