@@ -8,7 +8,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Test"
+            android:text="Test Page"
             android:id="@+id/textViewTest" android:layout_gravity="center_horizontal"/>
     <Button
         android:layout_width="wrap_content"
@@ -18,6 +18,18 @@
     <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Goto DbTest"
-            android:id="@+id/buttonDbTest" android:layout_gravity="center_horizontal"/>
+            android:text="Account Settings"
+            android:id="@+id/buttonAccount" android:layout_gravity="center_horizontal"/>
+
+    <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/editContact" android:hint="enter contact username"/>
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Contact"
+            android:id="@+id/buttonAddContact" android:layout_gravity="center_horizontal"/>
 </LinearLayout>

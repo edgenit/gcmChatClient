@@ -10,19 +10,12 @@
             android:layout_alignParentLeft="true"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Medium Text"
-            android:id="@+id/textViewName" android:layout_margin="5dp"/>
+            android:id="@+id/text_view_vame" android:layout_margin="5dp"/>
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Medium Text"
-            android:layout_alignParentRight="true"
-            android:id="@+id/textViewCount" android:layout_margin="5dp"/>
-    <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Medium Text"
-            android:id="@+id/textViewEmail"
-            android:layout_alignTop="@+id/textViewName" android:layout_toEndOf="@+id/textViewName"/>
+            android:id="@+id/text_view_count" android:layout_marginLeft="5dp" android:layout_marginRight="5dp"
+            android:layout_alignTop="@+id/text_view_vame" android:layout_alignParentEnd="true"/>
 </RelativeLayout>
