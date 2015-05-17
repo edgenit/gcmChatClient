@@ -1,11 +1,8 @@
-package com.example.chatdemo;
+package com.mrblasto.gcmchatclient;
 
-import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.widget.EditText;
 
 /**
  * Created by jeffreyfried on 4/4/15.
@@ -13,8 +10,6 @@ import android.widget.EditText;
 public class Common extends Application {
     private static String baseUrl = "http://10.0.0.4:3000";
 
-    //temp until we integrate Nudge database
-    private static String myEmail = "clevcollc@gmail.com";
 
     private static final String PROPERTY_APP_VERSION = "appVersion";
 
@@ -66,9 +61,6 @@ public class Common extends Application {
         return registerUrl;
     }
 
-    public static String getEmail() {
-        return myEmail;
-    }
     private static SharedPreferences getSharedPreferences(Context context) {
         return context.getSharedPreferences(MainActivity.class.getSimpleName(),
                 Context.MODE_PRIVATE);
@@ -95,7 +87,7 @@ public class Common extends Application {
     }
     public static String getAccountName(Context context) {
         SharedPreferences prefs = getSharedPreferences(context);
-        return prefs.getString(ACCOUNT_NAME, "Set Name");
+        return prefs.getString(ACCOUNT_NAME, "");
     }
     public static void setAccountName(Context context, String value) {
         SharedPreferences prefs = getSharedPreferences(context);

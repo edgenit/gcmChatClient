@@ -1,4 +1,4 @@
-package com.example.chatdemo.database;
+package com.mrblasto.gcmchatclient.database;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -14,8 +14,8 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.example.chatdemo.Common;
-import com.example.chatdemo.R;
+import com.mrblasto.gcmchatclient.Common;
+import com.mrblasto.gcmchatclient.R;
 
 /**
  * Created by jeffreyfried on 4/26/15.

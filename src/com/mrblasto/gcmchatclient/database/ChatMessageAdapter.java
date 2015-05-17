@@ -1,9 +1,9 @@
-package com.example.chatdemo.database;
+package com.mrblasto.gcmchatclient.database;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.os.Bundle;
-import com.example.chatdemo.ChatMessageListFragment;
+import com.mrblasto.gcmchatclient.ChatMessageListFragment;
 
 import java.util.Date;
 

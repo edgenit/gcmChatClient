@@ -1,9 +1,9 @@
-package com.example.chatdemo.gcm;
+package com.mrblasto.gcmchatclient.gcm;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
-import com.example.chatdemo.webserviceclients.ClientUtilities;
+import com.mrblasto.gcmchatclient.webserviceclients.ClientUtilities;
 
 /**
  * Created by jeffreyfried on 4/5/15.

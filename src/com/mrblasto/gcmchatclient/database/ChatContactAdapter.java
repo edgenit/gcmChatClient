@@ -1,4 +1,4 @@
-package com.example.chatdemo.database;
+package com.mrblasto.gcmchatclient.database;
 
 import android.content.ContentValues;
 import android.content.Context;

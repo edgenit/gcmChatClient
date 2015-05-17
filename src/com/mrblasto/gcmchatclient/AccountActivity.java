@@ -1,4 +1,4 @@
-package com.example.chatdemo;
+package com.mrblasto.gcmchatclient;
 
 
 import android.accounts.Account;
@@ -20,7 +20,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.common.AccountPicker;
-import com.example.chatdemo.webserviceclients.FetchToken;
+import com.mrblasto.gcmchatclient.webserviceclients.FetchToken;
 
 public class AccountActivity extends AppCompatActivity implements FetchToken.AuthTokenListener{
 	private static final int GET_MY_PROFILE = 900;

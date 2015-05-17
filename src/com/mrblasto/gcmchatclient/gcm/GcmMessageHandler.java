@@ -1,4 +1,4 @@
-package com.example.chatdemo.gcm;
+package com.mrblasto.gcmchatclient.gcm;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
-import com.example.chatdemo.database.ChatMessageAdapter;
+import com.mrblasto.gcmchatclient.database.ChatMessageAdapter;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 public class GcmMessageHandler extends IntentService {

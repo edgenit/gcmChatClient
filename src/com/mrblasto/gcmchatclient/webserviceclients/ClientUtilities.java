@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.chatdemo.webserviceclients;
+package com.mrblasto.gcmchatclient.webserviceclients;
 
+import android.content.Context;
 import android.util.Log;
-import com.example.chatdemo.Common;
+import com.mrblasto.gcmchatclient.Common;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -37,7 +38,7 @@ import java.util.Random;
  */
 public final class ClientUtilities {
 	
-	private static final String TAG = "ServerUtilities";
+	private static final String TAG = "ClientUtilities";
 
     private static final int MAX_ATTEMPTS = 5; // usually 5, but 1 for testing
     private static final int BACKOFF_MILLI_SECONDS = 2000;
@@ -63,36 +64,19 @@ public final class ClientUtilities {
         return null;
     }
 
-    /**
-     *
-     */
-//    public static String fetchProfile(final String email) {
-//        //Log.i(TAG, "registering device (regId = " + regId + ")");
-//        String serverUrl = Common.getServerUrl() + "/myprofile";
-//        Map<String, String> params = new HashMap<String, String>();
-//        params.put(Common.EMAIL, email);
-//        // Once GCM returns a registration id, we need to register it in the
-//        // demo server. As the server might be down, we will retry it a couple
-//        // times.
-//        try {
-//            return post(serverUrl, params, MAX_ATTEMPTS);
-//        } catch (IOException e) {
-//        }
-//        return null;
-//    }
+
     /**
      * Unregister this account/device pair within the server.
      */
-    public static void unregister(final String email) {
+    public static void unregister(Context context) {
         //Log.i(TAG, "unregistering device (email = " + email + ")");
         String serverUrl = Common.getServerUrl() + "/unregister";
         Map<String, String> params = new HashMap<String, String>();
-        params.put(Common.getEmail(), email);
+        params.put(Common.getAccountEmail(context), null);
         try {
             post(serverUrl, params, MAX_ATTEMPTS);
         } catch (IOException e) {
-            // At this point the device is unregistered from GCM, but still
-            // registered in the server.
+            // At this point the device is unregistered from ChatServer, but still registered in GCM
             // We could try to unregister again, but it is not necessary:
             // if the server tries to send a message to the device, it will get
             // a "NotRegistered" error message and should unregister the device.

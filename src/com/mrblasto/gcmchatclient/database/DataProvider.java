@@ -1,4 +1,4 @@
-package com.example.chatdemo.database;
+package com.mrblasto.gcmchatclient.database;
 
 import android.content.*;
 import android.database.Cursor;
@@ -7,8 +7,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.util.Log;
-import com.example.chatdemo.ChatMessageListFragment;
-import com.example.chatdemo.Common;
+import com.mrblasto.gcmchatclient.ChatMessageListFragment;
+import com.mrblasto.gcmchatclient.Common;
 
 /**
  * Created by jeffreyfried on 4/4/15.
@@ -17,7 +17,7 @@ import com.example.chatdemo.Common;
 public class DataProvider extends ContentProvider {
     public static final String COL_ID = "_id";
 
-    public static String AUTHORITY = "com.example.chatdemo.provider";
+    public static String AUTHORITY = "com.mrblasto.gcmchatclient.provider";
 
     public static final String TABLE_MESSAGES = "messages";
     public static final String COL_MSG = "msg";
@@ -30,11 +30,11 @@ public class DataProvider extends ContentProvider {
 //    public static final String COL_EMAIL = "email";
     public static final String COL_COUNT = "count";
 
-    public static final Uri ALL_MESSAGES = Uri.parse("content://com.example.chatdemo.provider/messages");
-    public static final Uri ALL_PROFILES = Uri.parse("content://com.example.chatdemo.provider/profiles");
+    public static final Uri ALL_MESSAGES = Uri.parse("content://com.mrblasto.gcmchatclient.provider/messages");
+    public static final Uri ALL_PROFILES = Uri.parse("content://com.mrblasto.gcmchatclient.provider/profiles");
     public static final Uri FILTERED_MESSAGES
-            = Uri.parse("content://com.example.chatdemo.provider/messages/#");
-    public static final Uri FILTERED_PROFILES = Uri.parse("content://com.example.chatdemo.provider/profiles/#");
+            = Uri.parse("content://com.mrblasto.gcmchatclient.provider/messages/#");
+    public static final Uri FILTERED_PROFILES = Uri.parse("content://com.mrblasto.gcmchatclient.provider/profiles/#");
 
     public static final int MESSAGES_ALLROWS = 1;
     public static final int MESSAGES_SINGLE_ROW = 2;
@@ -47,7 +47,7 @@ public class DataProvider extends ContentProvider {
     private class DbHelper extends SQLiteOpenHelper {
 
 
-        private static final String DATABASE_NAME = "chatdemo.db";
+        private static final String DATABASE_NAME = "gcmchatclient.db";
         private static final int DATABASE_VERSION = 8;
 
         public DbHelper(Context context) {
@@ -233,10 +233,10 @@ public class DataProvider extends ContentProvider {
     private static final UriMatcher uriMatcher;
     static {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        uriMatcher.addURI("com.example.chatdemo.provider", "messages", MESSAGES_ALLROWS);
-        uriMatcher.addURI("com.example.chatdemo.provider", "messages/#", MESSAGES_SINGLE_ROW);
-        uriMatcher.addURI("com.example.chatdemo.provider", "profiles", PROFILE_ALLROWS);
-        uriMatcher.addURI("com.example.chatdemo.provider", "profiles/#", PROFILE_SINGLE_ROW);
+        uriMatcher.addURI("com.mrblasto.gcmchatclient.provider", "messages", MESSAGES_ALLROWS);
+        uriMatcher.addURI("com.mrblasto.gcmchatclient.provider", "messages/#", MESSAGES_SINGLE_ROW);
+        uriMatcher.addURI("com.mrblasto.gcmchatclient.provider", "profiles", PROFILE_ALLROWS);
+        uriMatcher.addURI("com.mrblasto.gcmchatclient.provider", "profiles/#", PROFILE_SINGLE_ROW);
     }
 
     public void resetDatabase() {

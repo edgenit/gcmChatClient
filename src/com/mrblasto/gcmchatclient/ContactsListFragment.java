@@ -1,4 +1,4 @@
-package com.example.chatdemo;
+package com.mrblasto.gcmchatclient;
 
 import android.app.*;
 import android.content.CursorLoader;
@@ -11,9 +11,9 @@ import android.util.Log;
 import android.view.*;
 import android.widget.ListView;
 import android.widget.PopupMenu;
-import com.example.chatdemo.database.ChatContactAdapter;
-import com.example.chatdemo.database.ChatContactCursorAdapter;
-import com.example.chatdemo.database.DataProvider;
+import com.mrblasto.gcmchatclient.database.ChatContactAdapter;
+import com.mrblasto.gcmchatclient.database.ChatContactCursorAdapter;
+import com.mrblasto.gcmchatclient.database.DataProvider;
 
 
 /**

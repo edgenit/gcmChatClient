@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$USER_HOME$/2015MiscProjects/appcompat/appcompat.iml" filepath="$USER_HOME$/2015MiscProjects/appcompat/appcompat.iml" />
-      <module fileurl="file://$PROJECT_DIR$/chatdemo.iml" filepath="$PROJECT_DIR$/chatdemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../appcompat/appcompat.iml" filepath="$PROJECT_DIR$/../appcompat/appcompat.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gcm_ChatClient_android.iml" filepath="$PROJECT_DIR$/gcm_ChatClient_android.iml" />
       <module fileurl="file://$USER_HOME$/hugbo/BabyFace/builds/google_play_services_lib/google_play_services_lib.iml" filepath="$USER_HOME$/hugbo/BabyFace/builds/google_play_services_lib/google_play_services_lib.iml" />
     </modules>
   </component>

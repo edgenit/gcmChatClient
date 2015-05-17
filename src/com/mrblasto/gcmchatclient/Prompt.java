@@ -1,4 +1,4 @@
-package com.example.chatdemo;
+package com.mrblasto.gcmchatclient;
 
 import android.app.AlertDialog;
 import android.content.Context;

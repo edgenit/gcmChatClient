@@ -1,4 +1,4 @@
-package com.example.chatdemo;
+package com.mrblasto.gcmchatclient;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -21,8 +21,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.example.chatdemo.database.ChatContactAdapter;
-import com.example.chatdemo.gcm.RegisterWithGCMServer;
+import com.mrblasto.gcmchatclient.database.ChatContactAdapter;
+import com.mrblasto.gcmchatclient.gcm.RegisterWithGCMServer;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
@@ -42,7 +42,8 @@ public class MainActivity extends AppCompatActivity
 
 
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-    private String PROJECT_NUMBER = "1019696244371";
+    // fill in your Google Project Number (available from https://developers.google.com/)
+    private String PROJECT_NUMBER = "123456789fake";
     static final String TAG = "MainActivity";
 
     TextView mDisplay;
@@ -89,30 +90,27 @@ public class MainActivity extends AppCompatActivity
 
 
         if (savedInstanceState == null) {
-            if(hasAccount()) {
+            if (hasAccount()) {
                 Log.i("OnCreate", "null instance state and hasAccount");
                 Fragment fragment = new ContactsListFragment();
 
                 getFragmentManager()
                         .beginTransaction()
-                //        .addToBackStack(fragment.getClass().getName())
+                                //        .addToBackStack(fragment.getClass().getName())
                         .add(R.id.fragmentParentViewGroup, fragment)
                         .commit();
-            }
-            else {
+            } else {
                 Log.i("OnCreate", "null instance state and needs account");
                 Intent intent = new Intent(this, AccountActivity.class);
                 startActivity(intent);
                 finish();
             }
-        }
-        else if(hasAccount()) {
+        } else if (hasAccount()) {
             Log.i("OnCreate", "saved instance state and has account");
-            if(!popLastFragment()) {
+            if (!popLastFragment()) {
                 switchToFragmentOrActivity(R.id.contacts);
             }
-        }
-        else {
+        } else {
             Log.i("OnCreate", "saved instance state and no account");
             Intent intent = new Intent(this, AccountActivity.class);
             Common.setLastFragment(ContactsListFragment.class.getName());
@@ -122,10 +120,10 @@ public class MainActivity extends AppCompatActivity
 
         context = getApplicationContext();
 
-        doGCMRegistration();
-
+        if (hasAccount()) {
+            doGCMRegistration();
+        }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -177,7 +175,7 @@ public class MainActivity extends AppCompatActivity
         }
         else if (id == R.id.add_contact) {
             String title = getResources().getString(R.string.add_contact);
-            String detail = getResources().getString(R.string.add_contact_detail);
+            String detail = getResources().getString(R.string.contact_name);
             new Prompt(this, title, detail, this).show();
         }
         else {
@@ -193,8 +191,15 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         Log.w("onResume", "onResume");
         super.onResume();
-        doGCMRegistration();
-
+        if(hasAccount()) {
+            doGCMRegistration();
+        }
+        else {
+            Intent intent = new Intent(this, AccountActivity.class);
+            Common.setLastFragment(ContactsListFragment.class.getName());
+            startActivity(intent);
+            finish();
+        }
 
     }
 

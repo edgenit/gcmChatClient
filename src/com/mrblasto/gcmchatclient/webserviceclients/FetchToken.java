@@ -1,4 +1,4 @@
-package com.example.chatdemo.webserviceclients;
+package com.mrblasto.gcmchatclient.webserviceclients;
 
 import android.app.Activity;
 import android.app.Dialog;

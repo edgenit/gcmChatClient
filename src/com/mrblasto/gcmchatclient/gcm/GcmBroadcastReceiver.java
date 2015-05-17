@@ -1,4 +1,4 @@
-package com.example.chatdemo.gcm;
+package com.mrblasto.gcmchatclient.gcm;
 
 import android.app.Activity;
 import android.content.ComponentName;

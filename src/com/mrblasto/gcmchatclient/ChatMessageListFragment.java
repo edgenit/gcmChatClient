@@ -1,4 +1,4 @@
-package com.example.chatdemo;
+package com.mrblasto.gcmchatclient;
 
 import android.app.ListFragment;
 import android.app.LoaderManager;
@@ -14,10 +14,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import com.example.chatdemo.database.ChatMessageAdapter;
-import com.example.chatdemo.database.ChatMessageCursorAdapter;
-import com.example.chatdemo.database.DataProvider;
-import com.example.chatdemo.webserviceclients.ClientUtilities;
+import com.mrblasto.gcmchatclient.database.ChatMessageAdapter;
+import com.mrblasto.gcmchatclient.database.ChatMessageCursorAdapter;
+import com.mrblasto.gcmchatclient.database.DataProvider;
+import com.mrblasto.gcmchatclient.webserviceclients.ClientUtilities;
 import org.json.JSONObject;
 
 import java.io.IOException;
