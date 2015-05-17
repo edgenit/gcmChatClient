@@ -3,15 +3,36 @@
     <string name="app_name">chatdemo</string>
     <string name="no_contacts">No contacts</string>
 
-    <string-array name="Planets">
-        <item>Sun</item>
-        <item>Mercury</item>
-        <item>Venus</item>
-        <item>Earth</item>
-        <item>Mars</item>
-        <item>Jupiter</item>
-        <item>Saturn</item>
-        <item>Uranus</item>
-        <item>Neptune</item>
-    </string-array>
+    <string name="str_account_name">Account Name</string>
+    <string name="label_change_account">Change Account</string>
+    <string name="labelVerifyAccount">Verify Account</string>
+    <string name="pick_account">You must select an account in order to upload images and share movies.</string>
+
+    <string name="str_account_name_label">Account Name</string>
+   <!-- <string name="str_account_name_value">No Account Selected</string>-->
+    <string name="str_account_email_label">Your Account</string>
+    <string name="str_account_email_value">Select Google Account</string>
+    <string name="nodata">No data</string>
+    <string name="remove_contact">remove</string>
+    <string name="view_messages">view messages</string>
+
+    <string name="confirm_remove_message">Removing contact removes all messages between you and contact.  Continue?</string>
+    <string name="confirm_remove_contact">Remove Contact</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="registration_success">GCM Registration successful</string>
+    <string name="registration_failure">GCM Registration failed, null response, server may be down.</string>
+    <string name="send_message_success">Send message successful</string>
+    <string name="send_message_failed">Send message failed, null response, server may be down</string>
+
+
+    <string name="view_contacts">Contacts</string>
+    <string name="edit_account">Account</string>
+    <string name="app_name_cap">ChatDemo
+    </string>
+    <string name="add_contact">Add Contact</string>
+    <string name="add_contact_detail">Enter name of contact</string>
+    <string name="added_contact">added contact </string>
+    <string name="not_unique">is not unique</string>
+    <string name="unknown_error">Unknown error</string>
 </resources>

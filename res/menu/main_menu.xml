@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res/com.example.chatdemo">
+    <item android:id="@+id/add_contact"
+          android:title="@string/add_contact"
+          android:icon="@drawable/ic_add_white_36dp"
+          app:showAsAction="ifRoom"
+            />
+    <item android:id="@+id/contacts"
+          android:title="@string/view_contacts"
+          android:icon="@drawable/ic_contacts_white_36dp"
+          app:showAsAction="ifRoom"
+            />
+    <item android:id="@+id/account"
+          android:title="@string/edit_account"
+          android:icon="@drawable/ic_account_circle_white_36dp"
+          app:showAsAction="ifRoom"
+            />
+</menu>
