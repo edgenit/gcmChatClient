@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.util.Log;
 import com.example.chatdemo.ChatMessageListFragment;
 import com.example.chatdemo.Common;
-import com.example.chatdemo.R;
 
 /**
  * Created by jeffreyfried on 4/4/15.
@@ -31,11 +30,11 @@ public class DataProvider extends ContentProvider {
 //    public static final String COL_EMAIL = "email";
     public static final String COL_COUNT = "count";
 
-    public static final Uri CONTENT_URI_MESSAGES = Uri.parse("content://com.example.chatdemo.provider/messages");
-    public static final Uri CONTENT_URI_PROFILE = Uri.parse("content://com.example.chatdemo.provider/profiles");
-    public static final Uri CONTENT_URI_MESSAGES_FILTER
+    public static final Uri ALL_MESSAGES = Uri.parse("content://com.example.chatdemo.provider/messages");
+    public static final Uri ALL_PROFILES = Uri.parse("content://com.example.chatdemo.provider/profiles");
+    public static final Uri FILTERED_MESSAGES
             = Uri.parse("content://com.example.chatdemo.provider/messages/#");
-    public static final Uri CONTENT_URI_PROFILE_FILTER = Uri.parse("content://com.example.chatdemo.provider/profiles/#");
+    public static final Uri FILTERED_PROFILES = Uri.parse("content://com.example.chatdemo.provider/profiles/#");
 
     public static final int MESSAGES_ALLROWS = 1;
     public static final int MESSAGES_SINGLE_ROW = 2;
@@ -152,7 +151,8 @@ public class DataProvider extends ContentProvider {
                 if (values.get(COL_TO) == null) {
                     //db.execSQL("update profiles set count=count+1 where name = ?", new Object[]{values.get(COL_FROM)});
                     this.insertOrUpdateProfileMessageCount(values.getAsString(COL_FROM));
-                    getContext().getContentResolver().notifyChange(CONTENT_URI_PROFILE, null);
+                    // notify profile to update count.
+                    getContext().getContentResolver().notifyChange(ALL_PROFILES, null);
                 }
                 break;
 

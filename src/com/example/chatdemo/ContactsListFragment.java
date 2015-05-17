@@ -89,9 +89,9 @@ public class ContactsListFragment extends ListFragment
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Uri uri = Uri.withAppendedPath(DataProvider.CONTENT_URI_PROFILE
+        Uri uri = Uri.withAppendedPath(DataProvider.ALL_PROFILES
                     , Integer.toString(DataProvider.PROFILE_ALLROWS));
-        return new CursorLoader(getActivity(), DataProvider.CONTENT_URI_PROFILE,
+        return new CursorLoader(getActivity(), DataProvider.ALL_PROFILES,
                 CONTACTS_SUMMARY_PROJECTION, null, null,
                 DataProvider.COL_NAME + " COLLATE LOCALIZED ASC");
     }

@@ -20,18 +20,18 @@ public class ChatContactAdapter {
         ContentValues cv = new ContentValues();
         cv.put(DataProvider.COL_NAME, name);
         cv.put(DataProvider.COL_COUNT, messageCount);
-        context.getContentResolver().insert(DataProvider.CONTENT_URI_PROFILE_FILTER, cv);
+        context.getContentResolver().insert(DataProvider.FILTERED_PROFILES, cv);
     }
 
     public void delete(Context context) {
         String[] whereValues = {name};
-        context.getContentResolver().delete(DataProvider.CONTENT_URI_PROFILE_FILTER,
+        context.getContentResolver().delete(DataProvider.FILTERED_PROFILES,
                 DataProvider.COL_NAME + "=?", whereValues);
 
         // delete all messages between you and this contact
         String[] whereValues2 = {name, name};
         String messageFilter = DataProvider.COL_FROM + "=? or " + DataProvider.COL_TO + "=?";
-        context.getContentResolver().delete(DataProvider.CONTENT_URI_MESSAGES, messageFilter, whereValues2);
+        context.getContentResolver().delete(DataProvider.ALL_MESSAGES, messageFilter, whereValues2);
     }
 
     public void updateCount(Context context, int value) {
@@ -39,7 +39,7 @@ public class ChatContactAdapter {
         ContentValues cv = new ContentValues();
         cv.put(DataProvider.COL_COUNT, messageCount);
         String[] whereValues = {name};
-        context.getContentResolver().update(DataProvider.CONTENT_URI_PROFILE_FILTER, cv,
+        context.getContentResolver().update(DataProvider.FILTERED_PROFILES, cv,
                 DataProvider.COL_NAME + "=?", whereValues);
     }
 }

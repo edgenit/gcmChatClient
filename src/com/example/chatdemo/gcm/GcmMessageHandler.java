@@ -48,7 +48,7 @@ public class GcmMessageHandler extends IntentService {
 //        cv.put(DataProvider.COL_AT, new Date().toString());
 //        cv.put(DataProvider.COL_FROM, from);
 //        cv.put(DataProvider.COL_MSG, message);
-//        this.getBaseContext().getContentResolver().insert(DataProvider.CONTENT_URI_MESSAGES_FILTER, cv);
+//        this.getBaseContext().getContentResolver().insert(DataProvider.FILTERED_MESSAGES, cv);
 
         String text = chatMessageAdapter.getSender() + ": " + chatMessageAdapter.getMessage();
         showToast(text);

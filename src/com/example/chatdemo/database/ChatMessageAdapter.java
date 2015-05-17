@@ -19,7 +19,7 @@ import java.util.Date;
  cv.put(DataProvider.COL_AT, new Date().toString());
  cv.put(DataProvider.COL_FROM, from);
  cv.put(DataProvider.COL_MSG, message);
- this.getBaseContext().getContentResolver().insert(DataProvider.CONTENT_URI_MESSAGES_FILTER, cv);
+ this.getBaseContext().getContentResolver().insert(DataProvider.FILTERED_MESSAGES, cv);
  */
 public class ChatMessageAdapter {
 
@@ -59,7 +59,7 @@ public class ChatMessageAdapter {
         if(receiver != null) {
             cv.put(DataProvider.COL_TO, receiver);
         }
-        context.getContentResolver().insert(DataProvider.CONTENT_URI_MESSAGES_FILTER, cv);
+        context.getContentResolver().insert(DataProvider.FILTERED_MESSAGES, cv);
     }
 
     public String getMessage() {

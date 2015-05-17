@@ -5,7 +5,6 @@ import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -75,7 +74,7 @@ public class ChatMessageListFragment extends ListFragment implements LoaderManag
         getLoaderManager().restartLoader(0, null, this);
         super.onResume();
     }
-    static final String[] MESSAGES_SUMMARY_PROJECTION = new String[] {
+    static final String[] MESSAGES_PROJECTION = new String[] {
             DataProvider.COL_ID,
             DataProvider.COL_AT,
             DataProvider.COL_FROM,
@@ -84,12 +83,10 @@ public class ChatMessageListFragment extends ListFragment implements LoaderManag
     };
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Uri uri = Uri.withAppendedPath(DataProvider.CONTENT_URI_MESSAGES
-                , Integer.toString(DataProvider.MESSAGES_ALLROWS));
         String selection = "toName = ? or fromName = ?";
         String [] selectionArgs = {Common.getCurrentContact(), Common.getCurrentContact()};
-        return new CursorLoader(getActivity(), DataProvider.CONTENT_URI_MESSAGES,
-                MESSAGES_SUMMARY_PROJECTION, selection, selectionArgs,
+        return new CursorLoader(getActivity(), DataProvider.ALL_MESSAGES,
+                MESSAGES_PROJECTION, selection, selectionArgs,
                 DataProvider.COL_ID + " COLLATE LOCALIZED ASC");
     }
 
