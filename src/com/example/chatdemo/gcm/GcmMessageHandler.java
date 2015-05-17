@@ -19,6 +19,12 @@ public class GcmMessageHandler extends IntentService {
     }
 
     @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        super.onStartCommand(intent, flags, startId);
+        return START_STICKY;
+    }
+
+    @Override
     public void onCreate() {
         // TODO Auto-generated method stub
         super.onCreate();
@@ -55,7 +61,7 @@ public class GcmMessageHandler extends IntentService {
     public void showToast(String msg){
         handler.post(new Runnable() {
             public void run() {
-                Toast.makeText(getApplicationContext(), msg , Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), msg , Toast.LENGTH_SHORT).show();
             }
         });
 

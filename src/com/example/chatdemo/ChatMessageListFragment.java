@@ -86,9 +86,11 @@ public class ChatMessageListFragment extends ListFragment implements LoaderManag
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Uri uri = Uri.withAppendedPath(DataProvider.CONTENT_URI_MESSAGES
                 , Integer.toString(DataProvider.MESSAGES_ALLROWS));
+        String selection = "toName = ? or fromName = ?";
+        String [] selectionArgs = {Common.getCurrentContact(), Common.getCurrentContact()};
         return new CursorLoader(getActivity(), DataProvider.CONTENT_URI_MESSAGES,
-                MESSAGES_SUMMARY_PROJECTION, null, null,
-                DataProvider.COL_AT + " COLLATE LOCALIZED ASC");
+                MESSAGES_SUMMARY_PROJECTION, selection, selectionArgs,
+                DataProvider.COL_ID + " COLLATE LOCALIZED ASC");
     }
 
     @Override

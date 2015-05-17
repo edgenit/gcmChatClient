@@ -7,6 +7,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.util.Log;
+import com.example.chatdemo.ChatMessageListFragment;
+import com.example.chatdemo.Common;
+import com.example.chatdemo.R;
 
 /**
  * Created by jeffreyfried on 4/4/15.
@@ -21,7 +24,7 @@ public class DataProvider extends ContentProvider {
     public static final String COL_MSG = "msg";
     public static final String COL_FROM = "fromName";
     public static final String COL_TO = "toName";
-    public static final String COL_AT = "at";
+    public static final String COL_AT = "received";
 
     public static final String TABLE_PROFILES = "profiles";
     public static final String COL_NAME = "name";
@@ -46,7 +49,7 @@ public class DataProvider extends ContentProvider {
 
 
         private static final String DATABASE_NAME = "chatdemo.db";
-        private static final int DATABASE_VERSION = 7;
+        private static final int DATABASE_VERSION = 8;
 
         public DbHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -56,7 +59,7 @@ public class DataProvider extends ContentProvider {
         @Override
         public void onCreate(SQLiteDatabase db) {
             db.execSQL("create table " + TABLE_MESSAGES
-                    + " (_id integer primary key autoincrement, msg text, toName text, fromName text, at datetime default current_timestamp);");
+                    + " (_id integer primary key autoincrement, msg text, toName text, fromName text, received datetime default current_timestamp);");
             db.execSQL("create table " + TABLE_PROFILES
                     + " (_id integer primary key autoincrement, name text unique, count integer default 0);");
         }
@@ -108,8 +111,11 @@ public class DataProvider extends ContentProvider {
     }
 
     private void insertOrUpdateProfileMessageCount(String name) {
+        if(Common.getLastFragment().equals(ChatMessageListFragment.class.getName())
+                && Common.getCurrentContact().equals(name)) {
+            return; // don't update count if viewing messages
+        }
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         qb.setTables(TABLE_PROFILES);
         qb.appendWhere(COL_NAME + " = " + name);
@@ -121,6 +127,7 @@ public class DataProvider extends ContentProvider {
 
         if(c.getCount() > 0) {
             //db.execSQL("update profiles set count=count+1 where name = ?", new Object[]{name});
+            c.moveToFirst();
             int count = c.getInt(c.getColumnIndex(COL_COUNT));
             count++;
             values.put(COL_COUNT, count);

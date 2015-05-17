@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteConstraintException;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -20,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.example.chatdemo.database.ChatContactAdapter;
 import com.example.chatdemo.gcm.RegisterWithGCMServer;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -28,7 +30,8 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MainActivity extends AppCompatActivity implements RegisterWithGCMServer.RegisterListener{
+public class MainActivity extends AppCompatActivity
+        implements RegisterWithGCMServer.RegisterListener, Prompt.PromptListener {
     public static final String EXTRA_MESSAGE = "message";
     public static final String PROPERTY_REG_ID = "registration_id";
 
@@ -51,9 +54,14 @@ public class MainActivity extends AppCompatActivity implements RegisterWithGCMSe
 
     private boolean popLastFragment() {
         FragmentManager fm = getFragmentManager();
-        Log.w(TAG, "Fragment count: " + fm.getBackStackEntryCount());
-        if (fm.getBackStackEntryCount() > 0) {
-            getFragmentManager().popBackStack();
+        int bseCount = fm.getBackStackEntryCount();
+        Log.w(TAG, "Fragment count: " + bseCount);
+        if (bseCount > 0) {
+            FragmentManager.BackStackEntry bse = fm.getBackStackEntryAt(bseCount - 1);
+            String s = bse.getName();
+            Common.setLastFragment(s);
+            //if()
+            fm.popBackStack();
             return true;
         } else {
             return false;
@@ -85,27 +93,9 @@ public class MainActivity extends AppCompatActivity implements RegisterWithGCMSe
                 Log.i("OnCreate", "null instance state and hasAccount");
                 Fragment fragment = new ContactsListFragment();
 
-                // see if we coming from the last activity
-                String lastActivity = getIntent().getStringExtra(MainActivity.BUNDLE_KEY_LAST_ACTIVITY);
-                if(lastActivity != null && lastActivity.equalsIgnoreCase(AccountActivity.class.toString())) {
-                    switch (Common.getLastFragment()) {
-                        case R.id.contacts:
-                            fragment = new ContactsListFragment();
-                            break;
-                        case R.id.view_messages:
-                            fragment = new ChatMessageListFragment();
-                            break;
-                        case R.id.add_contact:
-                            fragment = new AddContactFragment();
-                            break;
-                        default:
-                            break;
-                    }
-                }
-
                 getFragmentManager()
                         .beginTransaction()
-                       // .addToBackStack(TAG)
+                //        .addToBackStack(fragment.getClass().getName())
                         .add(R.id.fragmentParentViewGroup, fragment)
                         .commit();
             }
@@ -119,13 +109,13 @@ public class MainActivity extends AppCompatActivity implements RegisterWithGCMSe
         else if(hasAccount()) {
             Log.i("OnCreate", "saved instance state and has account");
             if(!popLastFragment()) {
-                activateFragment(R.id.contacts);
+                switchToFragmentOrActivity(R.id.contacts);
             }
         }
         else {
             Log.i("OnCreate", "saved instance state and no account");
             Intent intent = new Intent(this, AccountActivity.class);
-            Common.setLastFragment(R.id.contacts);
+            Common.setLastFragment(ContactsListFragment.class.getName());
             startActivity(intent);
             finish();
         }
@@ -140,9 +130,19 @@ public class MainActivity extends AppCompatActivity implements RegisterWithGCMSe
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
     }
+
+//    @Override
+//    protected boolean onPrepareOptionsPanel(View view, Menu menu) {
+//        MenuItem menuAddContact = menu.findItem(R.id.add_contact);
+//        Fragment f = getFragmentManager().findFragmentById(R.id.fragmentParentViewGroup);
+//        boolean addContactVisible = f instanceof ContactsListFragment;
+//        menuAddContact.setEnabled(addContactVisible).setVisible(addContactVisible);
+//
+//        return super.onPrepareOptionsMenu(menu);
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements RegisterWithGCMSe
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if(!activateFragment(id)) {
+        if(!switchToFragmentOrActivity(id)) {
             return super.onOptionsItemSelected(item);
         }
         else {
@@ -158,15 +158,15 @@ public class MainActivity extends AppCompatActivity implements RegisterWithGCMSe
         }
     }
 
-    private boolean activateFragment(int id) {
+    private boolean switchToFragmentOrActivity(int id) {
         boolean result = true;
 
         if(id == R.id.contacts) {
             ContactsListFragment cf = new ContactsListFragment();
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             transaction.replace(R.id.fragmentParentViewGroup, cf);
-            transaction.addToBackStack(null);
-            Common.setLastFragment(id);
+            transaction.addToBackStack(cf.getClass().getName());
+            Common.setLastFragment(cf.getClass().getName());
             transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
             transaction.commit();
         }
@@ -176,13 +176,9 @@ public class MainActivity extends AppCompatActivity implements RegisterWithGCMSe
             finish();
         }
         else if (id == R.id.add_contact) {
-            Common.setLastFragment(id);
-            AddContactFragment tf = new AddContactFragment();
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragmentParentViewGroup, tf);
-            transaction.addToBackStack(null);
-            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-            transaction.commit();
+            String title = getResources().getString(R.string.add_contact);
+            String detail = getResources().getString(R.string.add_contact_detail);
+            new Prompt(this, title, detail, this).show();
         }
         else {
             result = false;
@@ -192,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements RegisterWithGCMSe
 
 
 
-    // You need to do the Play Services APK check here too.(done in doGCMRegistration)
+    // Need to do the Play Services APK check here too.(done in doGCMRegistration)
     @Override
     protected void onResume() {
         Log.w("onResume", "onResume");
@@ -200,15 +196,6 @@ public class MainActivity extends AppCompatActivity implements RegisterWithGCMSe
         doGCMRegistration();
 
 
-//        if(regid != null && !regid.isEmpty()) {
-//            //Already registered, just send registration
-//            new Register(Common.getEmail(), regid, MainActivity.this).execute();
-//            Toast.makeText(MainActivity.this, "Stored regid from onResume: " + regid, Toast.LENGTH_SHORT).show();
-//        }
-//        else {
-//            getRegisterIdInBackground();
-//        }
-//        checkPlayServices();
     }
 
     /**
@@ -365,4 +352,23 @@ public class MainActivity extends AppCompatActivity implements RegisterWithGCMSe
         }
     }
 
+    @Override
+    public void onPromptFinished(boolean okNotCancel, String value) {
+        if(okNotCancel) {
+            String contactName = value;
+            ChatContactAdapter cca = new ChatContactAdapter(contactName);
+            String result = getResources().getString(R.string.added_contact) + ": " + contactName;
+            try {
+                cca.insert(this);
+                switchToFragmentOrActivity(R.id.contacts);
+            }
+            catch(SQLiteConstraintException sqlEx) {
+                result = contactName + " " + getResources().getString(R.string.not_unique) + ".";
+            }
+            catch(Exception ex) {
+                result = getResources().getString(R.string.unknown_error) + ": " + ex.getLocalizedMessage();
+            }
+            Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
+        }
+    }
 }

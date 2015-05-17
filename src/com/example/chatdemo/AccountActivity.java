@@ -4,7 +4,6 @@ package com.example.chatdemo;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -90,14 +89,23 @@ public class AccountActivity extends AppCompatActivity implements FetchToken.Aut
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        getMenuInflater().inflate(R.menu.account_menu, menu);
         return true;
     }
 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Common.setLastFragment(item.getItemId());
+		String sClass = null;
+		switch(item.getItemId()) {
+			case R.id.contacts:
+				sClass = ContactsListFragment.class.getName();
+				break;
+			default:
+				sClass = ContactsListFragment.class.getName();
+				break;
+		}
+        Common.setLastFragment(sClass);
 		goBackToMainActivity();
         return true;
     }

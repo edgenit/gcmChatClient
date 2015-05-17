@@ -128,7 +128,7 @@ public class ContactsListFragment extends ListFragment
 
     private void viewMessagesFromContact(String contactName) {
 
-        Common.setLastFragment(R.id.view_messages);
+
 
         ChatContactAdapter contact = new ChatContactAdapter(contactName);
         contact.updateCount(getActivity(), 0);
@@ -141,10 +141,11 @@ public class ContactsListFragment extends ListFragment
 
         Common.setCurrentContact(contactName);
         ChatMessageListFragment cf = new ChatMessageListFragment();
+        Common.setLastFragment(cf.getClass().getName());
 //        cf.setArguments(bundle);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.fragmentParentViewGroup, cf);
-        transaction.addToBackStack(null);
+        transaction.addToBackStack(this.getClass().getName());
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         transaction.commit();
     }

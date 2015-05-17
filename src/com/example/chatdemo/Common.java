@@ -1,8 +1,11 @@
 package com.example.chatdemo;
 
+import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.widget.EditText;
 
 /**
  * Created by jeffreyfried on 4/4/15.
@@ -29,13 +32,13 @@ public class Common extends Application {
 
     private final static String registerUrl = baseUrl + "/register";
     private static String currentContact = "";
-    private static int lastFragment = 0;
+    private static String lastFragment = "";
 
-    public static int getLastFragment() {
+    public static String getLastFragment() {
         return lastFragment;
     }
 
-    public static void setLastFragment(int lastFragment) {
+    public static void setLastFragment(String lastFragment) {
         Common.lastFragment = lastFragment;
     }
 
@@ -112,4 +115,5 @@ public class Common extends Application {
         editor.putInt(PROPERTY_APP_VERSION, value);
         editor.commit();
     }
+
 }
