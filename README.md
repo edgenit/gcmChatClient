@@ -42,7 +42,9 @@ Once you've contact contacts, you can then click on the contact to bring up the 
 
 ![contact actions menu](/images/contactActions.png)
 
-Note that the person you are sending to does not have to have you in their contacts, they just need to be registered with the server.  The first message received from someone not in their contact list will create the contact.  You can always remove an unwanted contact.  Here's a view of the messages screen:
+Note that the person you are sending to does not have to have you in their contacts, they just need to be registered with the server.  The first message received from someone not in their contact list will create the contact.  You can always remove an unwanted contact.  At the very right of each contact line is a number indicated the number of unread messages.
+
+Here's a view of the messages screen:
 
 ![messages](/images/messages.png)
 
