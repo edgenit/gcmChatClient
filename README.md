@@ -22,5 +22,17 @@ At line 46 of MainActivity.java change the project id to the project id of the p
     
 ## Using the gcmChatClient
 
-_TBD_
+You must register a Google Play account in order to use the chat client.  If no account has been selected a dialog will pop up asking you to select a Google Play account.  The emails of existing accounts will be listed as well as an option to create a new account.
+
+![Account Registration](/images/AccountScreen.png)
+
+After entering an account and username press the contacts button in the right of the toolbar (square person icon).  This will navigate to the contacts page as well as obtain a Google Cloud Messaging token for the client and registering the token, username, and email with chat server.  If this is the first time the app has been used then a blank contacts window will be shown:
+
+![Contacts Screen](/images/contactsScreen.png)
+
+Note the three icons on the right of the action bar.  They have the following actions
+
+![Toolbar contols](/images/Controls.png)
+
+_Rest is under construction._
     
