@@ -34,5 +34,5 @@ Note the three icons on the right of the action bar.  They have the following ac
 
 ![Toolbar contols](/images/Controls.png)
 
-_Rest is under construction._
+_Rest is under construction._ 
     
