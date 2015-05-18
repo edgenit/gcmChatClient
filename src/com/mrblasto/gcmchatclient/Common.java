@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
  * Created by jeffreyfried on 4/4/15.
  */
 public class Common extends Application {
+    // change this to your web service's endpoint
     private static String baseUrl = "http://10.0.0.4:3000";
 
 
