@@ -34,5 +34,19 @@ Note the three icons on the right of the action bar.  They have the following ac
 
 ![Toolbar contols](/images/Controls.png)
 
+Clicking on the + sign brings up the add contact dialog.  Enter a name and press ok.  You'll be returned to the contacts screen with the new contact added
+
+![Add contact](/images/addContact.png)
+
+Once you've contact contacts, you can then click on the contact to bring up the contact actions menu and view messages or send a new one.  This menu also has the option to remove the contact. Removing a contact will also remove all the messages associated with the contact. 
+
+![contact actions menu](/images/contactActions.png)
+
+Note that the person you are sending to does not have to have you in their contacts, they just need to be registered with the server.  The first message received from someone not in their contact list will create the contact.  You can always remove an unwanted contact.  At the very right of each contact line is a number indicated the number of unread messages.
+
+Here's a view of the messages screen:
+
+![messages](/images/messages.png)
+
 _Rest is under construction._ 
     
