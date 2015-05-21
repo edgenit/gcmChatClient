@@ -139,7 +139,7 @@ public class AccountActivity extends AppCompatActivity implements FetchToken.Aut
 	//---------------------------------------------------------------------- UI
 	private void pickUserAccount() {
 		String[] accountTypes = new String[]{"com.google"};
-		String email = getSharedPreferences("MY_PREFS", 0).getString("AccountName", null);
+		String email = Common.getAccountEmail(this);
 		Account account = email != null && !email.isEmpty() ? new Account(email, "com.google") : null;
 		Intent intent = AccountPicker.newChooseAccountIntent(account, null,
 				accountTypes, true, null, null, null, null);
